@@ -1,43 +1,49 @@
 <template>
-  <div>
-    <h2>Posting List</h2>
-    <hr class="my-4" />
-    <PostFilter
-      v-model:title="params.title_like"
-      v-model:limit="params._limit"
-    />
-    <hr class="my-4" />
+  <h2>Posting List</h2>
+  <hr class="my-4" />
+  <PostFilter v-model:title="params.title_like" v-model:limit="params._limit" />
+  <hr class="my-4" />
 
-    <AppGrid :items="posts">
-      <template v-slot="{ item }">
-        <PostItem
-          :title="item.title"
-          :content="item.content"
-          :created-at="item.createdAt"
-          @click="goPage(item.id)"
-        ></PostItem>
-      </template>
-    </AppGrid>
-
-    <AppPagination
-      :current-page="params._page"
-      :page-count="pageCount"
-      @page="page => (params._page = page)"
-    />
-
-    <template v-if="posts && posts.length > 0">
-      <hr class="my-5" />
-      <AppCard>
-        <PostDetailView :id="posts[0].id"></PostDetailView>
-      </AppCard>
+  <AppGrid :items="posts">
+    <template v-slot="{ item }">
+      <PostItem
+        :title="item.title"
+        :content="item.content"
+        :created-at="item.createdAt"
+        @click="goPage(item.id)"
+        @modal="openModal(item)"
+      ></PostItem>
     </template>
-  </div>
+  </AppGrid>
+
+  <AppPagination
+    :current-page="params._page"
+    :page-count="pageCount"
+    @page="page => (params._page = page)"
+  />
+
+  <Teleport to="#modal">
+    <PostModal
+      v-model="show"
+      :title="modalTitle"
+      :content="modalContent"
+      :created-at="modalCreatedAt"
+    />
+  </Teleport>
+
+  <template v-if="posts && posts.length > 0">
+    <hr class="my-5" />
+    <AppCard>
+      <PostDetailView :id="posts[0].id"></PostDetailView>
+    </AppCard>
+  </template>
 </template>
 
 <script setup>
 import PostItem from '@/components/posts/PostItem.vue';
 import PostDetailView from './PostDetailView.vue';
 import PostFilter from '@/components/posts/PostFilterType.vue';
+import PostModal from './PostModal.vue';
 import AppPagination from '@/components/AppPagination.vue';
 import AppCard from '@/components/AppCard.vue';
 import AppGrid from '@/components/AppGrid.vue';
@@ -81,6 +87,19 @@ const goPage = id => {
       id,
     },
   });
+};
+
+// modal
+const show = ref(false);
+const modalTitle = ref('');
+const modalContent = ref('');
+const modalCreatedAt = ref('');
+
+const openModal = ({ title, content, createdAt }) => {
+  show.value = true;
+  modalTitle.value = title;
+  modalContent.value = content;
+  modalCreatedAt.value = createdAt;
 };
 </script>
 

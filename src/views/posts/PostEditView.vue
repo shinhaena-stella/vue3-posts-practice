@@ -20,6 +20,8 @@
         </button>
       </template>
     </PostForm>
+    <!-- <AppAlert :show="showAlert" :msg="alertMsg" :type="alertType" /> -->
+    <AppAlert :items="alerts"></AppAlert>
   </div>
 </template>
 
@@ -28,6 +30,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { getPostById, updatePost } from '@/api/posts';
 import { ref } from 'vue';
 import PostForm from '@/components/posts/PostForm.vue';
+import AppAlert from '@/components/AppAlert.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -54,13 +57,32 @@ fetchPost();
 const edit = async () => {
   try {
     await updatePost(id, { ...form.value });
-    router.push({ name: 'PostDetail', params: { id } });
+    // router.push({ name: 'PostDetail', params: { id } });
+    vAlert('Update complete!', 'success');
   } catch (error) {
     console.error(error);
+    vAlert(error.message);
   }
 };
 
 const goDetailPage = () => router.push({ name: 'PostDetail', params: { id } });
+
+// alert
+// const showAlert = ref(false);
+// const alertMsg = ref('');
+// const alertType = ref('');
+
+const alerts = ref([]);
+const vAlert = (msg, type = 'error') => {
+  alerts.value.push({ msg, type });
+  // showAlert.value = true;
+  // alertMsg.value = msg;
+  // alertType.value = type;
+  setTimeout(() => {
+    // showAlert.value = false;
+    alerts.value.shift();
+  }, 2000);
+};
 </script>
 
 <style lang="scss" scoped></style>
