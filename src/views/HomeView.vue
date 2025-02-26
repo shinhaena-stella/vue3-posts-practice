@@ -10,14 +10,23 @@
       <AppCard>{{ item }}</AppCard>
     </AppGrid>
   </div>
+  <hr class="my-4" />
+  <!-- <h2>{{ $person.name }}</h2>
+  <button class="btn btn-primary" @click="person.say">Click person</button> -->
 </template>
+
+<script>
+export default {
+  created() {
+    // console.log(this.$person.name);
+    // this.$person.say();
+  },
+};
+</script>
 
 <script setup>
 import { useRouter } from 'vue-router';
 import { ref } from 'vue';
-
-import AppCard from '@/components/AppCard.vue';
-import AppGrid from '@/components/AppGrid.vue';
 
 const router = useRouter();
 const goAboutPage = () => {
@@ -25,6 +34,8 @@ const goAboutPage = () => {
 };
 
 const items = ref(['apple', 'strawberry', 'grape', 'banana']);
+// const person = inject('person');
+//console.log('person.name: ', person.name);
 </script>
 
 <style lang="scss" scoped></style>

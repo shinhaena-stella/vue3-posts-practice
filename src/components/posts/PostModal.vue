@@ -7,7 +7,10 @@
         <div class="col-3" text-muted>Content</div>
         <div class="col-9">{{ content }}</div>
         <div class="col-3" text-muted>Date</div>
-        <div class="col-9">{{ createdAt }}</div>
+        <div class="col-9">
+          <!-- {{ $dayjs(createdAt).format('MM-DD-YYYY HH:mm:ss') }} not ideal -->
+          {{ formattedDate }}
+        </div>
       </div>
     </template>
     <template #actions>
@@ -19,8 +22,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
-import AppModal from '@/components/AppModal.vue';
+import { computed, inject } from 'vue';
 
 const props = defineProps({
   modelValue: Boolean,
@@ -41,6 +43,11 @@ const show = computed({
 const closeModal = () => {
   show.value = false;
 };
+
+const dayjs = inject('dayjs');
+const formattedDate = computed(() =>
+  dayjs(props.createdAt).format('MM-DD-YYYY HH:mm:ss'),
+);
 </script>
 
 <style lang="scss" scoped></style>
